@@ -48,6 +48,7 @@
 
     <ImageView
         android:id="@+id/imageView"
+        android:src="@drawable/avatar_example"
         android:layout_width="131dp"
         android:layout_height="132dp"
         android:layout_marginBottom="48dp"
@@ -55,6 +56,6 @@
         app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
-        tools:srcCompat="@tools:sample/avatars" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
