@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">agrobib-messenger</string>
+    <string name="app_name">Agrobib messenger</string>
+    <string name="btn_login">Login</string>
 </resources>
