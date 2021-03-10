@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_chat.*
-// TODO: remake all
+// TODO: Temporary code. Remake all
 class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var auth: FirebaseAuth
@@ -18,6 +18,8 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_chat)
 
         auth = Firebase.auth
+
+        greeting_text.text = "Welcome to Agrobib-messenger, ${auth.currentUser?.email}"
 
         logout_button.setOnClickListener(this)
     }
