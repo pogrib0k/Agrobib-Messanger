@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Agrobib messenger</string>
     <string name="btn_login">Login</string>
+    <string name="don_t_have_an_account_sign_up">Don’t have an account? <u>Sign Up</u>.</string>
+    <string name="fogot_password"><u>Fogot password?</u></string>
 </resources>
