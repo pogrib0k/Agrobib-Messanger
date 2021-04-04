@@ -30,7 +30,7 @@ class PasswordSignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.signup_button -> signUp();
+            R.id.signup_button -> signUp()
         }
     }
 
@@ -50,7 +50,7 @@ class PasswordSignUpActivity : AppCompatActivity(), View.OnClickListener {
                     val profileImageId = (1..3).random()
                     val profileImageUrl = FirebaseStorage
                             .getInstance()
-                            .getReferenceFromUrl("/images/default/$profileImageId.jpg")
+                            .getReference("/images/default/$profileImageId.jpg")
                             .toString()
 
                     val user = User(auth.uid.toString(), username, email, profileImageUrl)
