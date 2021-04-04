@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -46,51 +45,57 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         google_oauth_image.setOnClickListener(this)
         github_oauth_image.setOnClickListener(this)
         twitter_oauth_image.setOnClickListener(this)
+        signup_link.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.login_button -> {
-                val email = editTextEmail.text.toString()
-                val password = editTextPassword.text.toString()
-                signInWithEmailAndPassword(email, password)
-            }
+            R.id.login_button -> signInWithEmailAndPassword()
             R.id.google_oauth_image -> signInWithGoogle()
             R.id.github_oauth_image -> providerOauth(GithubOauth(auth))
             R.id.twitter_oauth_image -> providerOauth(TwitterOauth(auth))
+            R.id.signup_link -> startSignUp();
         }
     }
 
     private fun validateForm(): Boolean {
         var valid = true
 
-        val email = editTextEmail.text.toString()
+        val email = login_email.text.toString()
         if (TextUtils.isEmpty(email)) {
-            editTextEmail.error = "Required."
+            login_email.error = "Required."
             valid = false
         } else {
-            editTextEmail.error = null
+            login_email.error = null
         }
 
-        val password = editTextPassword.text.toString()
+        val password = login_password.text.toString()
         if (TextUtils.isEmpty(password)) {
-            editTextPassword.error = "Required."
+            login_password.error = "Required."
             valid = false
         } else {
-            editTextPassword.error = null
+            login_password.error = null
         }
 
         return valid
     }
 
     private fun startMessenger() {
-        val intent = Intent(this, ChatActivity::class.java)
+        val intent = Intent(this, ChatsActivity::class.java)
         startActivity(intent)
         finish()
     }
 
+    private fun startSignUp() {
+        val intent = Intent(this, PasswordSignUpActivity::class.java)
+        startActivity(intent)
+    }
+
     // Email and password authentication
-    private fun signInWithEmailAndPassword(email: String, password: String) {
+    private fun signInWithEmailAndPassword() {
+        val email = login_email.text.toString()
+        val password = login_password.text.toString()
+
         Log.d(TAG, "signIn:$email")
         if (!validateForm()) {
             return

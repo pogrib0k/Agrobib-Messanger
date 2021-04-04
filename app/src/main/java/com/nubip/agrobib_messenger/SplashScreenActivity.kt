@@ -23,7 +23,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun changeActivity(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            val chatActivity = Intent(this, ChatActivity::class.java)
+            val chatActivity = Intent(this, ChatsActivity::class.java)
             startActivity(chatActivity)
         } else {
             val loginActivity = Intent(this, LoginActivity::class.java)
