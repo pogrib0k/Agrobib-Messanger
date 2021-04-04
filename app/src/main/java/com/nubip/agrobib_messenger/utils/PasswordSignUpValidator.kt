@@ -9,7 +9,7 @@ class PasswordSignUpValidator {
             val atLeastOneDigit = Regex(pattern = """\d+""")
             val atLeastOneSymbol = Regex(pattern = """\w+""")
 
-            if (password.length <= 8) {
+            if (password.length < 8) {
                 return "Password must be at least 8 characters long!"
             }
 
