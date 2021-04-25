@@ -13,6 +13,7 @@ android {
         applicationId "com.nubip.agrobib_messenger"
         minSdkVersion 16
         targetSdkVersion 30
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -49,6 +50,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation "com.xwray:groupie:2.9.0"
     implementation "com.xwray:groupie-viewbinding:2.9.0"
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
