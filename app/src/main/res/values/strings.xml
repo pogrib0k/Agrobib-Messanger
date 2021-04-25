@@ -3,4 +3,7 @@
     <string name="btn_login">Login</string>
     <string name="don_t_have_an_account_sign_up">Don’t have an account? <u>Sign Up</u>.</string>
     <string name="fogot_password"><u>Fogot password?</u></string>
+    <string name="user_terms_dialog">Do you agree with me? Read Terms of use <u>here</u>.</string>
+    <string name="user_terms_agree">Agree</string>
+    <string name="type_user_name_to_search">Type user name to search...</string>
 </resources>
