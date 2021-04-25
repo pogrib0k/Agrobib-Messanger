@@ -13,13 +13,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.nubip.agrobib_messenger.models.Message
 import com.nubip.agrobib_messenger.models.User
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chats.*
-import kotlinx.android.synthetic.main.activity_private_chat.view.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
 
 
@@ -48,12 +49,17 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
-        setupDummyRows()
+        //setupDummyRows()
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerview_latest_messages.layoutManager = llm
         recyclerview_latest_messages.adapter = listadapter
-        recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerview_latest_messages.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         auth = Firebase.auth
 
@@ -63,7 +69,6 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
         fetchCurrentUser()
         logout_button.setOnClickListener(this)
     }
-
 
 
     private fun setAutocompleteAdapter() {
@@ -77,7 +82,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach{
+                snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
                     if (user != null) {
                         userList.add(user)
@@ -99,7 +104,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        when(v.id) {
+        when (v.id) {
             R.id.logout_button -> signOut()
             R.id.private_msg_btn -> privateMessage()
         }
@@ -130,7 +135,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
     private fun listenForLatestMessages() {
         val fromId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId")
-        ref.addChildEventListener(object: ChildEventListener {
+        ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(Message::class.java) ?: return
                 latestMessagesMap[p0.key!!] = chatMessage
@@ -146,9 +151,11 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
 
             }
+
             override fun onChildRemoved(p0: DataSnapshot) {
 
             }
+
             override fun onCancelled(p0: DatabaseError) {
 
             }
@@ -156,20 +163,20 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-      private fun setupDummyRows() {
-          listadapter.add(LatestMessageRow(Message()))
-          listadapter.add(LatestMessageRow(Message()))
-          listadapter.add(LatestMessageRow(Message()))
-  }
+//    private fun setupDummyRows() {
+//        listadapter.add(LatestMessageRow(Message()))
+//        listadapter.add(LatestMessageRow(Message()))
+//        listadapter.add(LatestMessageRow(Message()))
+//    }
 
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
                 currentUser = p0.getValue(User::class.java)
-                Log.d("LatestMessages", "Current user ${currentUser?.profileImageUrl}")
+                Log.d("LatestMessages", "Current user ${currentUser?.username}")
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -181,7 +188,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 
 }
 
-class LatestMessageRow(val chatMessage: Message): Item<GroupieViewHolder>() {
+class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -195,15 +202,21 @@ class LatestMessageRow(val chatMessage: Message): Item<GroupieViewHolder>() {
         }
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/$chatPartnerId")
-        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d("Ahahahahahah1", p0.toString())
+
                 chatPartnerUser = p0.getValue(User::class.java)
-                Log.d("Ahahahahahah", chatPartnerUser?.username.toString())
+
                 viewHolder.itemView.last_nickname.text = chatPartnerUser?.username
 
-                val targetImageView = viewHolder.itemView.user_logo
-                //Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
+                if (chatPartnerUser?.profileImageUrl != "") {
+                    val targetImageView = viewHolder.itemView.user_logo
+                    FirebaseStorage.getInstance().getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
+                        Picasso.get().load(it.toString()).into(targetImageView)
+                    }
+                }
+
             }
 
             override fun onCancelled(p0: DatabaseError) {
