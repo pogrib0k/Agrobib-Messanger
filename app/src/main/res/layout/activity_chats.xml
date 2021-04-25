@@ -11,10 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="match_parent">
 
         <AutoCompleteTextView
             android:id="@+id/search_text_view"
@@ -40,14 +37,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_latest_messages"
             android:layout_width="match_parent"
-            android:layout_height="700dp"
-            android:layout_marginTop="72dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="10"
-            tools:listitem="@layout/latest_message_row" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

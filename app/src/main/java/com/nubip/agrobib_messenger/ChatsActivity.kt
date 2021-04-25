@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -17,6 +19,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chats.*
+import kotlinx.android.synthetic.main.activity_private_chat.view.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
 
 
@@ -27,7 +30,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
     private val usernameList = ArrayList<String>()
     private val userList = ArrayList<User>()
     private lateinit var adapter: ArrayAdapter<String>
-    val listadapter = GroupAdapter<GroupieViewHolder>()
+    private lateinit var listadapter: GroupAdapter<GroupieViewHolder>
 
 
     companion object {
@@ -37,14 +40,27 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chats)
+        listadapter = GroupAdapter()
+        listadapter.setOnItemClickListener { item, view ->
+            val intent = Intent(this, PrivateChatActivity::class.java)
+            val row = item as LatestMessageRow
+            intent.putExtra("user", row.chatPartnerUser)
+            startActivity(intent)
+        }
+
+        setupDummyRows()
+        val llm = LinearLayoutManager(this)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        recyclerview_latest_messages.layoutManager = llm
+        recyclerview_latest_messages.adapter = listadapter
+        recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         auth = Firebase.auth
-        setupDummyRows()
-        //recyclerview_latest_messages.adapter = listadapter
+
         setAutocompleteAdapter()
 //        greeting_text.text = "Welcome to Agrobib-messenger, ${auth.currentUser?.email}"
-       // listenForLatestMessages()
-        //fetchCurrentUser()
+        listenForLatestMessages()
+        fetchCurrentUser()
         logout_button.setOnClickListener(this)
     }
 
@@ -166,8 +182,34 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 }
 
 class LatestMessageRow(val chatMessage: Message): Item<GroupieViewHolder>() {
+    var chatPartnerUser: User? = null
+
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.latest_message.text = "Test"
+        viewHolder.itemView.latest_message.text = chatMessage.text
+
+        val chatPartnerId: String
+        if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
+            chatPartnerId = chatMessage.toId
+        } else {
+            chatPartnerId = chatMessage.fromId
+        }
+
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$chatPartnerId")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                Log.d("Ahahahahahah1", p0.toString())
+                chatPartnerUser = p0.getValue(User::class.java)
+                Log.d("Ahahahahahah", chatPartnerUser?.username.toString())
+                viewHolder.itemView.last_nickname.text = chatPartnerUser?.username
+
+                val targetImageView = viewHolder.itemView.user_logo
+                //Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
     }
 
     override fun getLayout(): Int {

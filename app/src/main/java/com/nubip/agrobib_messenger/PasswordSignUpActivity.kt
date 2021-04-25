@@ -72,7 +72,7 @@ class PasswordSignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveUserToFirebaseDatabase(user: User) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid}")
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.setValue(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "User successful saved to firebase")

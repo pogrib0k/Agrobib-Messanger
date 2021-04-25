@@ -1,6 +1,5 @@
 package com.nubip.agrobib_messenger
 
-import android.content.ClipData
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -49,7 +48,7 @@ class PrivateChatActivity : AppCompatActivity() {
 
         if (fromId == null) return
 
-        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages").push()
         val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
         val chatMessage = Message(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
@@ -70,7 +69,7 @@ class PrivateChatActivity : AppCompatActivity() {
     }
 
     private fun listenForMessages() {
-        val ref = FirebaseDatabase.getInstance().getReference("/messages")
+        val ref = FirebaseDatabase.getInstance().getReference("/user-messages")
 
         ref.addChildEventListener(object: ChildEventListener {
 
