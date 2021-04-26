@@ -1,11 +1,15 @@
 package com.nubip.agrobib_messenger.tabs
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +29,11 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 // TODO: Temporary code. Remake all
@@ -202,8 +211,15 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SimpleDateFormat")
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.latest_message.text = chatMessage.text
+
+        val sdf = java.text.SimpleDateFormat("MM.dd")
+        val date = Date(chatMessage.timestamp * 1000)
+
+        viewHolder.itemView.date_of_last_message.text = sdf.format(date)
 
         val chatPartnerId: String
         if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
@@ -223,7 +239,8 @@ class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
 
                 if (chatPartnerUser?.profileImageUrl != "") {
                     val targetImageView = viewHolder.itemView.user_logo
-                    FirebaseStorage.getInstance().getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
+                    FirebaseStorage.getInstance()
+                        .getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
                         Picasso.get().load(it.toString()).into(targetImageView)
                     }
                 }
