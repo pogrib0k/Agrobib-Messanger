@@ -54,7 +54,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 
         // Actionbar
 
-        supportActionBar?.show()
+        supportActionBar?.hide()
 
         //setupDummyRows()
         val llm = LinearLayoutManager(this)
