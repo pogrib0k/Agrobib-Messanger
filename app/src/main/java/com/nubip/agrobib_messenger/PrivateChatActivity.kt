@@ -4,18 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import com.nubip.agrobib_messenger.models.Message
 import com.nubip.agrobib_messenger.models.User
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_private_chat.*
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
+import kotlinx.android.synthetic.main.latest_message_row.view.*
 
 class PrivateChatActivity : AppCompatActivity() {
 
@@ -37,7 +37,6 @@ class PrivateChatActivity : AppCompatActivity() {
     }
 
 
-
     private fun performSendMessage() {
         // how do we actually send a message to firebase...
         val text = message.text.toString()
@@ -49,9 +48,11 @@ class PrivateChatActivity : AppCompatActivity() {
         if (fromId == null) return
 
         val reference = FirebaseDatabase.getInstance().getReference("/user-messages").push()
-        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+        val toReference =
+            FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
-        val chatMessage = Message(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+        val chatMessage =
+            Message(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.d("D", "Saved our chat message: ${reference.key}")
@@ -61,17 +62,19 @@ class PrivateChatActivity : AppCompatActivity() {
 
         toReference.setValue(chatMessage)
 
-        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+        val latestMessageRef =
+            FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
         latestMessageRef.setValue(chatMessage)
 
-        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+        val latestMessageToRef =
+            FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
         latestMessageToRef.setValue(chatMessage)
     }
 
     private fun listenForMessages() {
         val ref = FirebaseDatabase.getInstance().getReference("/user-messages")
 
-        ref.addChildEventListener(object: ChildEventListener {
+        ref.addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(Message::class.java)
@@ -80,9 +83,9 @@ class PrivateChatActivity : AppCompatActivity() {
                     Log.d("D", chatMessage.text)
 
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid && chatMessage.toId == user_uuid) {
-                        adapter.add(ChatFromItem(chatMessage.text))
-                    } else if (chatMessage.fromId == user_uuid &&  chatMessage.toId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatToItem(chatMessage.text))
+                        adapter.add(ChatFromItem(chatMessage.text, chatMessage.fromId))
+                    } else if (chatMessage.fromId == user_uuid && chatMessage.toId == FirebaseAuth.getInstance().uid) {
+                        adapter.add(ChatToItem(chatMessage.text, chatMessage.toId, chatMessage))
                     }
                 }
 
@@ -110,24 +113,68 @@ class PrivateChatActivity : AppCompatActivity() {
 
 }
 
-class ChatFromItem(val text: String): Item<GroupieViewHolder>() {
+class ChatFromItem(val text: String, val userId: String) : Item<GroupieViewHolder>() {
+    var chatPartnerUser: User? = null
+
     override fun getLayout(): Int {
         return R.layout.chat_from_row
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_text_from.text = text
-    }
 
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$userId")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                chatPartnerUser = p0.getValue(User::class.java)
+
+                if (chatPartnerUser?.profileImageUrl != "") {
+                    val targetImageView = viewHolder.itemView.from_image
+                    FirebaseStorage.getInstance()
+                        .getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
+                            Picasso.get().load(it.toString()).into(targetImageView)
+                        }
+                }
+
+            }
+        })
+    }
 }
 
-class ChatToItem(val text: String): Item<GroupieViewHolder>() {
+class ChatToItem(val text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
+    var chatPartnerUser: User? = null
+
+
     override fun getLayout(): Int {
         return R.layout.chat_to_row
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_text_to.text = text
+
+        val ref = FirebaseDatabase.getInstance().getReference("/users/${message.fromId}")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                chatPartnerUser = p0.getValue(User::class.java)
+
+                if (chatPartnerUser?.profileImageUrl != "") {
+                    val targetImageView = viewHolder.itemView.to_image
+                    FirebaseStorage.getInstance()
+                        .getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
+                            Picasso.get().load(it.toString()).into(targetImageView)
+                        }
+                }
+
+            }
+        })
     }
 
 }

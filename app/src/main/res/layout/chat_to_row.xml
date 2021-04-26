@@ -18,12 +18,12 @@
         android:padding="16dp"
         android:text="TEst"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/to_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/to_image"
         android:layout_width="72dp"
         android:layout_height="55dp"
         android:layout_marginStart="16dp"
