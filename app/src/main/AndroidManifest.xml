@@ -9,14 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Agrobibmessenger">
-        <activity android:name=".PrivateChatActivity"></activity>
+        <activity android:name=".tabs.SettingsActivity"></activity>
+        <activity android:name=".tabs.UserProfileActivity" />
+        <activity android:name=".PrivateChatActivity" />
         <activity android:name=".PasswordSignUpActivity" />
-        <activity android:name=".ChatsActivity"/>
+        <activity android:name=".tabs.ChatsActivity" />
         <activity
             android:name=".SplashScreenActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

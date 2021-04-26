@@ -18,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import com.nubip.agrobib_messenger.oauth.GithubOauth
 import com.nubip.agrobib_messenger.oauth.Oauth
 import com.nubip.agrobib_messenger.oauth.TwitterOauth
+import com.nubip.agrobib_messenger.tabs.ChatsActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -31,7 +32,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_login)
 
         auth = Firebase.auth
-
+        supportActionBar?.hide()
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))

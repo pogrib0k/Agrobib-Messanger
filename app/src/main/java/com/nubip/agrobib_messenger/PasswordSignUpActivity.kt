@@ -22,6 +22,7 @@ class PasswordSignUpActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_signup)
+        supportActionBar?.hide()
 
         auth = Firebase.auth
 
