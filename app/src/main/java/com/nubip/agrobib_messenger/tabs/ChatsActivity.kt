@@ -1,4 +1,4 @@
-package com.nubip.agrobib_messenger
+package com.nubip.agrobib_messenger.tabs
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +14,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.nubip.agrobib_messenger.LoginActivity
+import com.nubip.agrobib_messenger.PrivateChatActivity
+import com.nubip.agrobib_messenger.R
 import com.nubip.agrobib_messenger.models.Message
 import com.nubip.agrobib_messenger.models.User
 import com.squareup.picasso.Picasso
@@ -71,7 +74,7 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 //        greeting_text.text = "Welcome to Agrobib-messenger, ${auth.currentUser?.email}"
         listenForLatestMessages()
         fetchCurrentUser()
-        logout_button.setOnClickListener(this)
+        //logout_button.setOnClickListener(this)
     }
 
 
@@ -107,12 +110,12 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
         query.addListenerForSingleValueEvent(listener)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.logout_button -> signOut()
-            R.id.private_msg_btn -> privateMessage()
-        }
-    }
+//    override fun onClick(v: View) {
+//        when (v.id) {
+//            R.id.logout_button -> signOut()
+//            R.id.private_msg_btn -> privateMessage()
+//        }
+//    }
 
     private fun privateMessage() {
         val intent = Intent(this, PrivateChatActivity::class.java)
@@ -187,6 +190,10 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 
             }
         })
+    }
+
+    override fun onClick(v: View?) {
+
     }
 
 

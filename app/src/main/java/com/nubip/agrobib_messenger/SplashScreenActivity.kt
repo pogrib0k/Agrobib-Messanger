@@ -6,12 +6,14 @@ import android.os.Bundle
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.nubip.agrobib_messenger.tabs.ChatsActivity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+        supportActionBar?.hide()
 
         splashScreenImage.alpha = 0f
 

@@ -3,6 +3,8 @@ package com.nubip.agrobib_messenger
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -15,7 +17,6 @@ import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_private_chat.*
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
-import kotlinx.android.synthetic.main.latest_message_row.view.*
 
 class PrivateChatActivity : AppCompatActivity() {
 
@@ -25,14 +26,26 @@ class PrivateChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_private_chat)
+
+        val linearLayoutManager = LinearLayoutManager(this);
+        meseeges_list.layoutManager = linearLayoutManager
+        supportActionBar?.hide()
+
         val user = intent.getParcelableExtra<User>("user")
         username.text = user?.username
         user_uuid = user?.uuid.toString()
         meseeges_list.adapter = adapter
 
         listenForMessages()
+        message.setOnFocusChangeListener { v: View, hasFocus: Boolean -> scrollMessageListToEnd(hasFocus) }
         btn_send_message.setOnClickListener {
             performSendMessage()
+        }
+    }
+
+    private fun scrollMessageListToEnd(hasFocus: Boolean) {
+        if (hasFocus) {
+            meseeges_list.scrollToPosition(adapter.itemCount - 1)
         }
     }
 
@@ -57,7 +70,7 @@ class PrivateChatActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Log.d("D", "Saved our chat message: ${reference.key}")
                 message.text.clear()
-                meseeges_list.scrollToPosition(adapter.itemCount - 1)
+                meseeges_list.scrollToPosition(adapter.itemCount)
             }
 
         toReference.setValue(chatMessage)
@@ -69,6 +82,8 @@ class PrivateChatActivity : AppCompatActivity() {
         val latestMessageToRef =
             FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
         latestMessageToRef.setValue(chatMessage)
+        adapter.notifyDataSetChanged()
+        message.clearFocus()
     }
 
     private fun listenForMessages() {
@@ -81,7 +96,7 @@ class PrivateChatActivity : AppCompatActivity() {
 
                 if (chatMessage != null) {
                     Log.d("D", chatMessage.text)
-
+                    meseeges_list.scrollToPosition(adapter.itemCount - 1)
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid && chatMessage.toId == user_uuid) {
                         adapter.add(ChatFromItem(chatMessage.text, chatMessage.fromId))
                     } else if (chatMessage.fromId == user_uuid && chatMessage.toId == FirebaseAuth.getInstance().uid) {
