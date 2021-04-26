@@ -42,8 +42,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_latest_messages"
+            android:background="@android:color/darker_gray"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"

@@ -49,6 +49,10 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
+        // Actionbar
+
+        supportActionBar?.show()
+
         //setupDummyRows()
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
