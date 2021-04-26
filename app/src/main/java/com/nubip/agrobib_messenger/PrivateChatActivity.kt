@@ -98,7 +98,7 @@ class PrivateChatActivity : AppCompatActivity() {
                     Log.d("D", chatMessage.text)
                     meseeges_list.scrollToPosition(adapter.itemCount - 1)
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid && chatMessage.toId == user_uuid) {
-                        adapter.add(ChatFromItem(chatMessage.text, chatMessage.fromId))
+                        adapter.add(ChatFromItem(chatMessage.text, chatMessage.fromId, chatMessage))
                     } else if (chatMessage.fromId == user_uuid && chatMessage.toId == FirebaseAuth.getInstance().uid) {
                         adapter.add(ChatToItem(chatMessage.text, chatMessage.toId, chatMessage))
                     }
@@ -128,7 +128,7 @@ class PrivateChatActivity : AppCompatActivity() {
 
 }
 
-class ChatFromItem(val text: String, val userId: String) : Item<GroupieViewHolder>() {
+class ChatFromItem(val text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
 
     override fun getLayout(): Int {
@@ -137,6 +137,9 @@ class ChatFromItem(val text: String, val userId: String) : Item<GroupieViewHolde
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_text_from.text = text
+        val sdf = java.text.SimpleDateFormat("HH:mm")
+        val date = java.util.Date(message.timestamp * 1000)
+        viewHolder.itemView.message_time_sent_by_current_user.text = sdf.format(date)
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -170,6 +173,9 @@ class ChatToItem(val text: String, val userId: String, val message: Message) : I
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.message_text_to.text = text
+        val sdf = java.text.SimpleDateFormat("HH:mm")
+        val date = java.util.Date(message.timestamp * 1000)
+        viewHolder.itemView.message_time_sent_by_another_user.text = sdf.format(date)
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/${message.fromId}")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
