@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.nubip.agrobib_messenger.models.User
 import kotlinx.android.synthetic.main.activity_chats.*
+import kotlinx.android.synthetic.main.activity_user_search.*
 
 class SearchUser : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ class SearchUser : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chats)
+        setContentView(R.layout.activity_user_search)
         setAutocompleteAdapter()
     }
 

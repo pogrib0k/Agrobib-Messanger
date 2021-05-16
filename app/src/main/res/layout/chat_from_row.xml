@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:maxWidth="240dp"
             android:maxHeight="100dp"
+            android:scaleType="center"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/message_text_from"
             app:layout_constraintEnd_toEndOf="parent"

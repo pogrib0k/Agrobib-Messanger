@@ -14,5 +14,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/aie_loadscreen_v_2_green" />
+        app:srcCompat="@drawable/aie_loadscreen_v_1_darkgray" />
 </androidx.constraintlayout.widget.ConstraintLayout>

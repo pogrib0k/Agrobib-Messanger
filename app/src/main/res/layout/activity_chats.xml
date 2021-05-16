@@ -1,73 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
+        layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/activity_main_drawer" />
 
-        <android.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_purple"
-            android:minHeight="50dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8dp">
-                <AutoCompleteTextView
-                    android:id="@+id/search_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/search_button"
-                    android:maxLines="1"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:background="@drawable/rounded_edit_text_fileld"
-                    android:hint="Type user name to search..."
-                    android:paddingLeft="20dp"
-                    tools:layout_editor_absoluteX="29dp"
-                    tools:layout_editor_absoluteY="16dp" />
-
-                <Button
-                    android:id="@+id/search_button"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/icon_search_large"
-                    android:maxWidth="10dp"
-                    android:maxHeight="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:padding="10dp"
-
-                    android:text="@string/ion_search"
-                    android:textColor="@color/white"
-                    android:textSize="23sp" />
-
-            </RelativeLayout>
-
-
-        </android.widget.Toolbar>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
