@@ -69,7 +69,7 @@
         </android.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_latest_messages"
+            android:id="@+id/recyclerview_latest_messages2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"

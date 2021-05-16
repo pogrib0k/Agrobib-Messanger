@@ -1,26 +1,33 @@
-package com.nubip.agrobib_messenger.tabs
+package com.nubip.agrobib_messenger
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.nubip.agrobib_messenger.LoginActivity
-import com.nubip.agrobib_messenger.PrivateChatActivity
-import com.nubip.agrobib_messenger.R
 import com.nubip.agrobib_messenger.models.Message
 import com.nubip.agrobib_messenger.models.User
 import com.squareup.picasso.Picasso
@@ -28,31 +35,50 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chats.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
-import java.time.Instant
-import java.time.ZoneId
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-
-// TODO: Temporary code. Remake all
-class ChatsActivity : AppCompatActivity(), View.OnClickListener {
+class ChatsActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private val usernameList = ArrayList<String>()
     private val userList = ArrayList<User>()
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var listadapter: GroupAdapter<GroupieViewHolder>
+    private lateinit var navView: NavigationView
 
 
     companion object {
         var currentUser: User? = null
     }
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chats)
+        setContentView(R.layout.activity_chats2)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        fetchCurrentUser()
+
+        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+        }
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(setOf(
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+
         listadapter = GroupAdapter()
         listadapter.setOnItemClickListener { item, view ->
             val intent = Intent(this, PrivateChatActivity::class.java)
@@ -60,10 +86,6 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
             intent.putExtra("user", row.chatPartnerUser)
             startActivity(intent)
         }
-
-        // Actionbar
-
-        supportActionBar?.hide()
 
         //setupDummyRows()
         val llm = LinearLayoutManager(this)
@@ -79,11 +101,20 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 
         auth = Firebase.auth
 
-        setAutocompleteAdapter()
-//        greeting_text.text = "Welcome to Agrobib-messenger, ${auth.currentUser?.email}"
+        //setAutocompleteAdapter()
         listenForLatestMessages()
-        fetchCurrentUser()
-        //logout_button.setOnClickListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.chats, menu)
+        return true
+    }
+
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
 
@@ -192,6 +223,16 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onDataChange(p0: DataSnapshot) {
                 currentUser = p0.getValue(User::class.java)
+                val header = navView.inflateHeaderView(R.layout.nav_header_main)
+
+                Log.d("TAG", currentUser?.profileImageUrl.toString())
+                header.bar_nickname.text = currentUser!!.username
+                header.bar_email.text = currentUser!!.email
+
+                FirebaseStorage.getInstance()
+                    .getReferenceFromUrl(currentUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
+                        Picasso.get().load(it.toString()).into(header.main_user_image)
+                    }
                 Log.d("LatestMessages", "Current user ${currentUser?.username}")
             }
 
@@ -201,12 +242,9 @@ class ChatsActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    override fun onClick(v: View?) {
-
-    }
-
 
 }
+
 
 class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
@@ -245,8 +283,8 @@ class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
                     val targetImageView = viewHolder.itemView.user_logo
                     FirebaseStorage.getInstance()
                         .getReferenceFromUrl(chatPartnerUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
-                        Picasso.get().load(it.toString()).into(targetImageView)
-                    }
+                            Picasso.get().load(it.toString()).into(targetImageView)
+                        }
                 }
 
             }

@@ -18,7 +18,6 @@ import com.google.firebase.ktx.Firebase
 import com.nubip.agrobib_messenger.oauth.GithubOauth
 import com.nubip.agrobib_messenger.oauth.Oauth
 import com.nubip.agrobib_messenger.oauth.TwitterOauth
-import com.nubip.agrobib_messenger.tabs.ChatsActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 
