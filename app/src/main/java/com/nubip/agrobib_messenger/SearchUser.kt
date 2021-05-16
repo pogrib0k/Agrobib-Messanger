@@ -23,6 +23,10 @@ class SearchUser : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_search)
         setAutocompleteAdapter()
+
+        back_button2.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setAutocompleteAdapter() {
