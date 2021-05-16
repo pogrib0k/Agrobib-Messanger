@@ -5,7 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
+    android:background="#009c48"
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
@@ -18,29 +18,29 @@
             android:layout_width="72dp"
             android:layout_height="68dp"
             android:layout_marginTop="96dp"
+            android:src="@drawable/google_icon_logo"
             app:layout_constraintEnd_toEndOf="@+id/signup_link"
-            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintStart_toStartOf="@+id/signup_link"
-            app:layout_constraintTop_toBottomOf="@+id/signup_link"
-            app:srcCompat="@drawable/google_icon_logo" />
+            app:layout_constraintTop_toBottomOf="@+id/signup_link" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/twitter_oauth_image"
             android:layout_width="72dp"
             android:layout_height="68dp"
+            android:src="@drawable/twitter_icon"
             app:layout_constraintEnd_toEndOf="@+id/signup_link"
             app:layout_constraintStart_toEndOf="@+id/google_oauth_image"
-            app:layout_constraintTop_toTopOf="@+id/google_oauth_image"
-            app:srcCompat="@drawable/twitter_icon" />
+            app:layout_constraintTop_toTopOf="@+id/google_oauth_image" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/github_oauth_image"
             android:layout_width="72dp"
             android:layout_height="68dp"
+            android:src="@drawable/github_icon"
             app:layout_constraintEnd_toStartOf="@+id/google_oauth_image"
             app:layout_constraintStart_toStartOf="@+id/signup_link"
-            app:layout_constraintTop_toTopOf="@+id/google_oauth_image"
-            app:srcCompat="@drawable/github_icon" />
+            app:layout_constraintTop_toTopOf="@+id/google_oauth_image" />
 
         <Button
             android:id="@+id/login_button"
@@ -49,8 +49,8 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_button"
             android:text="@string/btn_login"
+            android:textColor="@color/white"
             android:textSize="18sp"
-            app:backgroundTint="#6E419A"
             app:layout_constraintEnd_toEndOf="@+id/forget_password_text"
             app:layout_constraintStart_toStartOf="@+id/forget_password_text"
             app:layout_constraintTop_toBottomOf="@+id/forget_password_text" />
