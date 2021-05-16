@@ -8,8 +8,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,7 +21,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -35,12 +32,10 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ChatsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
@@ -48,7 +43,7 @@ class ChatsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private lateinit var auth: FirebaseAuth
     private lateinit var listadapter: GroupAdapter<GroupieViewHolder>
     private lateinit var navView: NavigationView
-
+    private var header: View? = null
 
     companion object {
         var currentUser: User? = null
@@ -186,15 +181,18 @@ class ChatsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
             override fun onDataChange(p0: DataSnapshot) {
                 currentUser = p0.getValue(User::class.java)
-                val header = navView.inflateHeaderView(R.layout.nav_header_main)
+
+                if (header == null) {
+                    header = navView.inflateHeaderView(R.layout.nav_header_main)
+                }
 
                 Log.d("TAG", currentUser?.profileImageUrl.toString())
-                header.bar_nickname.text = currentUser!!.username
-                header.bar_email.text = currentUser!!.email
+                header?.bar_nickname!!.text = currentUser!!.username
+                header?.bar_email!!.text = currentUser!!.email
 
                 FirebaseStorage.getInstance()
                     .getReferenceFromUrl(currentUser?.profileImageUrl.toString()).downloadUrl.addOnSuccessListener {
-                        Picasso.get().load(it.toString()).into(header.main_user_image)
+                        Picasso.get().load(it.toString()).into(header!!.main_user_image)
                     }
                 Log.d("LatestMessages", "Current user ${currentUser?.username}")
             }
@@ -219,7 +217,11 @@ class ChatsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         startActivity(intent)
     }
 
+    override fun onResume() {
+        super.onResume()
 
+        fetchCurrentUser()
+    }
 }
 
 
