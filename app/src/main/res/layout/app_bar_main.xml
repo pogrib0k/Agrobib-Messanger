@@ -27,7 +27,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_latest_messages"
         android:layout_width="match_parent"
-        android:layout_height="673dp"
+        android:layout_height="654dp"
         android:background="@android:color/darker_gray"
         android:clickable="true"
         android:focusable="true"
