@@ -251,8 +251,17 @@ class ChatToItem(var text: String, val userId: String, val message: Message) : I
         viewHolder.itemView.message_time_sent_by_another_user.text = sdf.format(date)
 
         if (text.contains("[/images/")) {
-            text = text.split("\\[/images/.*]".toRegex())[1]
+            val res: List<String> = text.split("\\[/images/.*]".toRegex())
+            val url = text.split("].*".toRegex())[0].substring(1)
+
+            FirebaseStorage.getInstance()
+                .getReference(url).downloadUrl.addOnSuccessListener {
+                    Picasso.get().load(it.toString()).into(viewHolder.itemView.msg_img2)
+                }
+            viewHolder.itemView.msg_img2.isVisible = true
+            text = res[1]
         }
+
         viewHolder.itemView.message_text_to.text = text
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/${message.fromId}")
