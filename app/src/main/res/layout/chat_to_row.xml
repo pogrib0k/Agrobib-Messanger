@@ -22,12 +22,13 @@
 
         <ImageView
             android:id="@+id/msg_img2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="240dp"
             android:maxHeight="100dp"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/message_text_to"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/google_oauth_image"
             android:layout_width="72dp"
             android:layout_height="68dp"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toBottomOf="@+id/signup_link"
             app:srcCompat="@drawable/google_icon_logo" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/twitter_oauth_image"
             android:layout_width="72dp"
             android:layout_height="68dp"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="@+id/google_oauth_image"
             app:srcCompat="@drawable/twitter_icon" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/github_oauth_image"
             android:layout_width="72dp"
             android:layout_height="68dp"

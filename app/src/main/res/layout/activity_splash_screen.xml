@@ -8,11 +8,11 @@
 
     <ImageView
         android:id="@+id/splashScreenImage"
-        android:layout_width="249dp"
-        android:layout_height="214dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_image_24" />
+        app:srcCompat="@drawable/aie_loadscreen_v_2_green" />
 </androidx.constraintlayout.widget.ConstraintLayout>

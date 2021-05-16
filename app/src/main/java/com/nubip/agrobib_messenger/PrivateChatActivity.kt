@@ -38,7 +38,6 @@ class PrivateChatActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this);
         meseeges_list.layoutManager = linearLayoutManager
         supportActionBar?.hide()
-        select_image.setImageResource(R.drawable.ic_gallry)
 
         img_uri = ""
         val user = intent.getParcelableExtra<User>("user")
@@ -93,7 +92,7 @@ class PrivateChatActivity : AppCompatActivity() {
                     Log.d("TAG", "Failed to upload image to storage: ${it.message}")
                 }
         } else if(requestCode == 0) {
-            select_image.setImageResource(R.drawable.ic_gallry)
+            select_image.setImageResource(R.drawable.aie_attach_icon_2)
             img_uri = ""
         }
     }
@@ -147,7 +146,7 @@ class PrivateChatActivity : AppCompatActivity() {
         latestMessageToRef.setValue(chatMessage)
         adapter.notifyDataSetChanged()
         message.clearFocus()
-        select_image.setImageResource(R.drawable.ic_gallry)
+        select_image.setImageResource(R.drawable.aie_attach_icon_2)
     }
 
     private fun listenForMessages() {

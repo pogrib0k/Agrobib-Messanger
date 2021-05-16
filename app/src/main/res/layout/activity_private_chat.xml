@@ -83,10 +83,10 @@
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
-            android:layout_marginLeft="64dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:background="@drawable/rounded_edit_text_fileld"
             android:ems="10"
             android:hint="Type message..."
@@ -101,32 +101,31 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_send_message"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/select_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.466" />
 
         <Button
             android:id="@+id/btn_send_message"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/send_message_icon_2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/select_image"
-            android:layout_width="55dp"
-            android:layout_height="53dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginBottom="13dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/aie_attach_icon_2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
