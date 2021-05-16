@@ -216,6 +216,10 @@ class LatestMessageRow(val chatMessage: Message) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.latest_message.text = chatMessage.text
 
+        if (chatMessage.text.contains("[/images/")) {
+            viewHolder.itemView.latest_message.text = chatMessage.text.split("\\[/images/.*]".toRegex())[1]
+        }
+
         val sdf = java.text.SimpleDateFormat("MM.dd")
         val date = Date(chatMessage.timestamp * 1000)
 

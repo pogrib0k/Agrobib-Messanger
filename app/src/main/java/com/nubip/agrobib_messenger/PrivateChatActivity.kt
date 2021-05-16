@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -21,11 +22,14 @@ import com.xwray.groupie.GroupieViewHolder
 import kotlinx.android.synthetic.main.activity_private_chat.*
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
+import java.util.*
+import kotlin.math.log
 
 class PrivateChatActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<GroupieViewHolder>()
     lateinit var user_uuid: String
+    lateinit var img_uri: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +38,9 @@ class PrivateChatActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this);
         meseeges_list.layoutManager = linearLayoutManager
         supportActionBar?.hide()
+        select_image.setImageResource(R.drawable.ic_gallry)
 
+        img_uri = ""
         val user = intent.getParcelableExtra<User>("user")
         username.text = user?.username
         user_uuid = user?.uuid.toString()
@@ -68,6 +74,24 @@ class PrivateChatActivity : AppCompatActivity() {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
             select_image.setImageBitmap(bitmap)
+
+            val filename = UUID.randomUUID().toString()
+            val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+
+            ref.putFile(selectedPhotoUri!!)
+                .addOnSuccessListener {
+                    Log.d("TAG", "Successfully uploaded image: ${it.metadata?.path}")
+                    img_uri = "/images/$filename"
+                    ref.downloadUrl.addOnSuccessListener {
+                        Log.d("TAG", "File Location: $it")
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d("TAG", "Failed to upload image to storage: ${it.message}")
+                }
+        } else if(requestCode == 0) {
+            select_image.setImageResource(R.drawable.ic_gallry)
+            img_uri = ""
         }
     }
 
@@ -80,10 +104,14 @@ class PrivateChatActivity : AppCompatActivity() {
 
     private fun performSendMessage() {
         // how do we actually send a message to firebase...
-        val text = message.text.toString()
+        var text = message.text.toString()
 
         if (text.isEmpty()) {
             return
+        }
+
+        if (img_uri.isNotEmpty()) {
+            text = "[$img_uri]$text"
         }
 
         val fromId = FirebaseAuth.getInstance().uid
@@ -116,6 +144,7 @@ class PrivateChatActivity : AppCompatActivity() {
         latestMessageToRef.setValue(chatMessage)
         adapter.notifyDataSetChanged()
         message.clearFocus()
+        select_image.setImageResource(R.drawable.ic_gallry)
     }
 
     private fun listenForMessages() {
@@ -160,7 +189,7 @@ class PrivateChatActivity : AppCompatActivity() {
 
 }
 
-class ChatFromItem(val text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
+class ChatFromItem(var text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
 
     override fun getLayout(): Int {
@@ -168,10 +197,23 @@ class ChatFromItem(val text: String, val userId: String, val message: Message) :
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.message_text_from.text = text
         val sdf = java.text.SimpleDateFormat("HH:mm")
         val date = java.util.Date(message.timestamp * 1000)
         viewHolder.itemView.message_time_sent_by_current_user.text = sdf.format(date)
+
+        if (text.contains("[/images/")) {
+            val res: List<String> = text.split("\\[/images/.*]".toRegex())
+            val url = text.split("].*".toRegex())[0].substring(1)
+
+            FirebaseStorage.getInstance()
+                .getReference(url).downloadUrl.addOnSuccessListener {
+                    Picasso.get().load(it.toString()).into(viewHolder.itemView.msg_img)
+                }
+            viewHolder.itemView.msg_img.isVisible = true
+            text = res[1]
+        }
+
+        viewHolder.itemView.message_text_from.text = text
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -195,7 +237,7 @@ class ChatFromItem(val text: String, val userId: String, val message: Message) :
     }
 }
 
-class ChatToItem(val text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
+class ChatToItem(var text: String, val userId: String, val message: Message) : Item<GroupieViewHolder>() {
     var chatPartnerUser: User? = null
 
 
@@ -204,10 +246,14 @@ class ChatToItem(val text: String, val userId: String, val message: Message) : I
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.message_text_to.text = text
         val sdf = java.text.SimpleDateFormat("HH:mm")
         val date = java.util.Date(message.timestamp * 1000)
         viewHolder.itemView.message_time_sent_by_another_user.text = sdf.format(date)
+
+        if (text.contains("[/images/")) {
+            text = text.split("\\[/images/.*]".toRegex())[1]
+        }
+        viewHolder.itemView.message_text_to.text = text
 
         val ref = FirebaseDatabase.getInstance().getReference("/users/${message.fromId}")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
