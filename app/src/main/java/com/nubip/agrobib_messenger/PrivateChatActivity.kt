@@ -1,7 +1,11 @@
 package com.nubip.agrobib_messenger
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +45,30 @@ class PrivateChatActivity : AppCompatActivity() {
         btn_send_message.setOnClickListener {
             performSendMessage()
         }
+        select_image.setOnClickListener {
+            Log.d("Select image", "Try to show photo selector")
+
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    var selectedPhotoUri: Uri? = null
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            // proceed and check what the selected image was....
+            Log.d("Photo", "Photo was selected")
+
+            selectedPhotoUri = data.data
+
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+            select_image.setImageBitmap(bitmap)
+        }
     }
 
     private fun scrollMessageListToEnd(hasFocus: Boolean) {
@@ -53,6 +81,10 @@ class PrivateChatActivity : AppCompatActivity() {
     private fun performSendMessage() {
         // how do we actually send a message to firebase...
         val text = message.text.toString()
+
+        if (text.isEmpty()) {
+            return
+        }
 
         val fromId = FirebaseAuth.getInstance().uid
         val user = intent.getParcelableExtra<User>("user")
