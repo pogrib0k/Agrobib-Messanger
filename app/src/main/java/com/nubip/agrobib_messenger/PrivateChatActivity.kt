@@ -58,6 +58,9 @@ class PrivateChatActivity : AppCompatActivity() {
             intent.type = "image/*"
             startActivityForResult(intent, 0)
         }
+        back_button.setOnClickListener{
+            finish()
+        }
     }
 
     var selectedPhotoUri: Uri? = null
