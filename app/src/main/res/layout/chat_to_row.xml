@@ -6,41 +6,60 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp">
 
-    <ImageView
-        android:id="@+id/msg_img2"
-        android:layout_width="114dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
-        android:layout_marginEnd="91dp"
-        android:layout_marginRight="91dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/message_text_to"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="2dp"
         android:background="@drawable/rounded_edit_text_fileld_borderless"
-        android:maxWidth="240dp"
-        android:padding="16dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="5dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="5dp"
-        android:text="TEst"
-        android:textIsSelectable="true"
+        android:maxWidth="250dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/to_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.266">
+
+        <ImageView
+            android:id="@+id/msg_img2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="240dp"
+            android:maxHeight="100dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/message_text_to"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/message_text_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="240dp"
+            android:padding="16dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="5dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="2dp"
+            android:text="TEst"
+            android:textColor="@color/black"
+            android:textIsSelectable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/message_time_sent_by_another_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="2dp"
+            android:text="12:25"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/to_image"
@@ -54,17 +73,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/avatar_example" />
-
-    <TextView
-        android:id="@+id/message_time_sent_by_another_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="12:25"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/message_text_to"
-        app:layout_constraintStart_toEndOf="@+id/message_text_to"
-        app:layout_constraintTop_toTopOf="@+id/message_text_to" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
