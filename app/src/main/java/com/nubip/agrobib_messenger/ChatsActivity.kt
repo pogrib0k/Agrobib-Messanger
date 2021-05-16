@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -42,12 +43,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class ChatsActivity : AppCompatActivity() {
+class ChatsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     private lateinit var auth: FirebaseAuth
-    private val usernameList = ArrayList<String>()
-    private val userList = ArrayList<User>()
-    private lateinit var adapter: ArrayAdapter<String>
     private lateinit var listadapter: GroupAdapter<GroupieViewHolder>
     private lateinit var navView: NavigationView
 
@@ -65,10 +63,11 @@ class ChatsActivity : AppCompatActivity() {
         fetchCurrentUser()
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        fab.setOnClickListener {
+            val intent = Intent(this, SearchUser::class.java)
+            startActivity(intent)
         }
+        supportActionBar?.title = "Agrobib-messenger"
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -87,7 +86,6 @@ class ChatsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //setupDummyRows()
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerview_latest_messages.layoutManager = llm
@@ -101,7 +99,7 @@ class ChatsActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        //setAutocompleteAdapter()
+        setNavigationViewListener()
         listenForLatestMessages()
     }
 
@@ -117,39 +115,6 @@ class ChatsActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-
-    private fun setAutocompleteAdapter() {
-        val query = FirebaseDatabase.getInstance().getReference("/users").orderByKey()
-        adapter = ArrayAdapter<String>(
-            this, android.R.layout.simple_list_item_1, usernameList
-        )
-
-        val listener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach {
-                    val user = it.getValue(User::class.java)
-                    if (user != null) {
-                        userList.add(user)
-                        usernameList.add(user.username)
-                    }
-                }
-                adapter.notifyDataSetChanged()
-            }
-
-        }
-        search_text_view.setAdapter(adapter)
-        search_text_view.setOnItemClickListener { parent, view, position, id ->
-            val privateChatActivity = Intent(this, PrivateChatActivity::class.java)
-            val user = userList.filter { user -> user.username == (view as TextView).text }.single()
-            privateChatActivity.putExtra("user", user)
-            startActivity(privateChatActivity)
-        }
-        query.addListenerForSingleValueEvent(listener)
-    }
-
 //    override fun onClick(v: View) {
 //        when (v.id) {
 //            R.id.logout_button -> signOut()
@@ -157,11 +122,16 @@ class ChatsActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private fun privateMessage() {
-        val intent = Intent(this, PrivateChatActivity::class.java)
-        startActivity(intent)
-    }
+//    private fun privateMessage() {
+//        val intent = Intent(this, PrivateChatActivity::class.java)
+//        startActivity(intent)
+//    }
 
+    private fun setNavigationViewListener() {
+        val navigationView =
+            findViewById<View>(R.id.nav_view) as NavigationView
+        navigationView.setNavigationItemSelectedListener(this)
+    }
     private fun signOut() {
         auth.signOut()
 
@@ -209,13 +179,6 @@ class ChatsActivity : AppCompatActivity() {
         })
     }
 
-
-//    private fun setupDummyRows() {
-//        listadapter.add(LatestMessageRow(Message()))
-//        listadapter.add(LatestMessageRow(Message()))
-//        listadapter.add(LatestMessageRow(Message()))
-//    }
-
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
@@ -240,6 +203,20 @@ class ChatsActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.account_settings -> openAccountSettings()
+            R.id.logout -> signOut()
+        }
+        return true
+    }
+
+    private fun openAccountSettings() {
+        val intent = Intent(this, AccountSettings::class.java)
+        intent.putExtra("user", currentUser)
+        startActivity(intent)
     }
 
 
